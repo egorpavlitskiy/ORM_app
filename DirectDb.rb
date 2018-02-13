@@ -1,6 +1,6 @@
 require 'pg'
 
-class Postgres_direct
+class DirectDB
 
   def connect_db
     @connect = PG.connect :dbname => 'postdb', :user => 'postuser', :password => '12345'
@@ -10,11 +10,7 @@ class Postgres_direct
     connect_db.exec("SELECT * FROM notes") do |result|
 
       result.each { |e|
-        id = e["id"]
-        title = e["title"]
-        description = e["description"]
-
-        p "#{id} #{title} #{description}"
+        p e
       }
     end
     @connect.close
@@ -40,8 +36,8 @@ end
 param = {:title => 'Poo' , :description => 'Little story for child'}
 param_update = {:id => 7, :title => 'Poo' , :description => 'Little story for child'}
 
-app = Postgres_direct.new
+# app = Postgres_direct.new
 # app.add_entry(param)
-app.select_all
+# app.select_all
 # app.delete_entry(5)
 # app.update_entry(param_update)
