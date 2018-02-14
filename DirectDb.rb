@@ -7,8 +7,8 @@ class DirectDB
   end
 
   def select_all
-    connect_db.exec("SELECT * FROM notes") do |result|
-
+    inquiry = "SELECT * FROM #{tb_name}"
+    connect_db.exec(inquiry) do |result|
       result.each { |e|
         p e
       }
@@ -17,27 +17,32 @@ class DirectDB
   end
 
   def add_entry (params)
-    connect_db.exec("INSERT INTO notes (title, description) values ('#{params[:title]}', '#{params[:description]}')")
+    values = Array.new
+    columns = Array.new
+    params.each{|key, value| columns.push(key.to_s); values.push("'#{value.to_s}'")}
+    columns = columns.join(", ")
+    values = values.join(", ")
+    connect_db.exec("INSERT INTO #{tb_name} (#{columns}) values (#{values})")
     @connect.close
   end
 
   def delete_entry(id)
-    connect_db.exec("DELETE FROM notes WHERE id=#{id}")
+    connect_db.exec("DELETE FROM #{tb_name} WHERE id=#{id}")
     @connect.close
   end
 
-  def update_entry(params)
-    connect_db.exec("UPDATE notes SET title='#{params[:title]}', description='#{params[:description]}' WHERE id=#{params[:id]} ")
+  def update_entry(params, id)
+    updates = []
+    params.each {|key, val| updates.push("#{key} = '#{val}'")}
+    updates = updates.join(", ")
+    p updates
+
+    connect_db.exec("UPDATE #{tb_name} SET #{updates} WHERE id=#{id} ")
     @connect.close
+  end
+
+  def tb_name
+    tb_name = self.class.to_s.downcase + "s"
   end
 
 end
-
-param = {:title => 'Poo' , :description => 'Little story for child'}
-param_update = {:id => 7, :title => 'Poo' , :description => 'Little story for child'}
-
-# app = Postgres_direct.new
-# app.add_entry(param)
-# app.select_all
-# app.delete_entry(5)
-# app.update_entry(param_update)
