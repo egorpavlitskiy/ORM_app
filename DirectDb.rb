@@ -35,8 +35,6 @@ class DirectDB
     updates = []
     params.each {|key, val| updates.push("#{key} = '#{val}'")}
     updates = updates.join(", ")
-    p updates
-
     connect_db.exec("UPDATE #{tb_name} SET #{updates} WHERE id=#{id} ")
     @connect.close
   end
