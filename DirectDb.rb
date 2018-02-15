@@ -22,7 +22,8 @@ class DirectDB
     params.each{|key, value| columns.push(key.to_s); values.push("'#{value.to_s}'")}
     columns = columns.join(", ")
     values = values.join(", ")
-    connect_db.exec("INSERT INTO #{tb_name} (#{columns}) values (#{values})")
+    inquiry = "INSERT INTO #{tb_name} (#{columns}) values (#{values})"
+    connect_db.exec(inquiry)
     @connect.close
   end
 
@@ -32,10 +33,11 @@ class DirectDB
   end
 
   def update_entry(params, id)
-    updates = []
+    updates = Array.new
     params.each {|key, val| updates.push("#{key} = '#{val}'")}
     updates = updates.join(", ")
-    connect_db.exec("UPDATE #{tb_name} SET #{updates} WHERE id=#{id} ")
+    inquiry = "UPDATE #{tb_name} SET #{updates} WHERE id=#{id} "
+    connect_db.exec(inquiry)
     @connect.close
   end
 
